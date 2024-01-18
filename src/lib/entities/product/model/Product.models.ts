@@ -8,6 +8,7 @@ export class Product implements Cost {
 
 		public readonly uuid: string,
 		public name: string,
+		public status: string,
 		// Cost interface-like properties.
 		public category: string,
 		public amount: number,

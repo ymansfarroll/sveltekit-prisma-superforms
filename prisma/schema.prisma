@@ -8,12 +8,35 @@ datasource db {
 }
 
 model Product {
-  id        Int      @id @default(autoincrement())
-  provider  String
-  category  String
-  amount    Int
-  date      DateTime
-  file      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  uuid     String   @unique @default(uuid())
+  provider String
+  name     String
+  status   Boolean  @default(true) // enabled (true) / disabled (false).
+  category String
+  amount   Int
+  date     DateTime
+  file     String // URL-based store in the cloud.
+
+  // Built-in.
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // nullable field to simulate deletedAt built-in method.
+
+  // Relations.
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+}
+
+model Category {
+  id      Int    @id @default(autoincrement())
+  name    String
+  maximun Int
+
+  // Built-in.
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // nullable field to simulate deletedAt built-in method.
+
+  // Relations.
+  products Product[]
 }
