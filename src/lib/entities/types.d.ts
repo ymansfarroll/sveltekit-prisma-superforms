@@ -1,4 +1,3 @@
-// Hands-on code to get familiar with typescript.
 export interface Cost {
 	category: string;
 	amount: number;

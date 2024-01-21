@@ -1,5 +1,5 @@
 // Hands-on code to get familiar with typescript.
-import type { Constraint } from '$lib/entities/types';
+import type { Constraint } from '../types';
 
 export class Category implements Constraint {
 	constructor(

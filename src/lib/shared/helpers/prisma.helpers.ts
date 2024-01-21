@@ -28,7 +28,7 @@ export const applyCategorySoftDeletion = async (id: number): Promise<void> => {
 			}
 		}
 	});
-	// uuids-array for matched categoryId product.
+	// uuids-array for matched categoryId products.
 	const uuids = products.map((product) => product.uuid);
 
 	// Category soft-deletion.

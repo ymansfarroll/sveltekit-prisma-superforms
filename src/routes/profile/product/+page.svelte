@@ -1,12 +1,10 @@
-<script>
+<script lang="ts">
 	export let data;
+	import { setContext } from 'svelte';
+	import { ProductManagementPage } from '$lib/pages';
+
+	// Spread down the loaded data.
+	setContext('productFormData', data.superValidatedProduct);
 </script>
 
-<div>
-	<h1>Products</h1>
-	<div>
-		{#each data.products as product}
-			<p>{product.id}</p>
-		{/each}
-	</div>
-</div>
+<ProductManagementPage />

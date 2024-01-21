@@ -12,7 +12,6 @@ model Product {
   provider String
   name     String
   status   Boolean  @default(true) // enabled (true) / disabled (false).
-  category String
   amount   Int
   date     DateTime
   file     String // URL-based store in the cloud.
@@ -23,8 +22,8 @@ model Product {
   deletedAt DateTime? // nullable field to simulate deletedAt built-in method.
 
   // Relations.
-  Category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int      @unique
 }
 
 model Category {
