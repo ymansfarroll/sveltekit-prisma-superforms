@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { InvalidForm, GenericInput } from '..';
+	import { InvalidForm, GenericInput } from '.';
 	import { Input, Label, Select, Button, Toggle } from 'flowbite-svelte';
 	import { superForm, formFieldProxy } from 'sveltekit-superforms/client';
 
 	import type { Writable } from 'svelte/store';
 	import type { ProductSchema } from '$lib/entities';
 	import type { SuperValidated } from 'sveltekit-superforms';
+
+	// Temporal categories.
+	let categories = [{ value: 1, name: 'Electrical' }];
 
 	// Retrieve data context.
 	const productFormData: SuperValidated<ProductSchema> = getContext('productFormData');
@@ -21,7 +24,7 @@
 	$: boolValue = proxyStatusValue as Writable<boolean>;
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" use:enhance action="?/create">
 	<div class="mx-auto flex w-9/12 flex-col space-y-4">
 		<div>
 			<Label for="product-provider" class="mb-2">Product provider:</Label>
@@ -63,10 +66,10 @@
 			<Label for="product-category" class="mb-2">Product category:</Label>
 			<Select
 				id="product-category"
-				items={[]}
+				items={categories}
 				placeholder="Choose an option ..."
-				name="category"
-				bind:value={$superProductStore.category}
+				name="categoryId"
+				bind:value={$superProductStore.categoryId}
 			/>
 		</div>
 		<GenericInput form={productSuperForm} field="date" sort="date" />

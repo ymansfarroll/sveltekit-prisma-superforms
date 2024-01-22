@@ -23,7 +23,7 @@ model Product {
 
   // Relations.
   category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int      @unique
+  categoryId Int
 }
 
 model Category {

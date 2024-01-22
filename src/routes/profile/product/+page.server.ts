@@ -1,18 +1,13 @@
-import { prisma } from '$lib/shared/prisma/client';
 import { superValidate, message } from 'sveltekit-superforms/server';
 import { ProductModelValidation } from '$lib/entities';
 
-export async function load() {
-	const products = await prisma.product.findMany({
-		where: {
-			amount: {
-				//  greater than > 0
-				gt: 0
-			},
-			status: true
-		}
-	});
+export async function load(event) {
 	const superValidatedProduct = await superValidate(ProductModelValidation);
+	const response = await event.fetch('/api/v1/product', {
+		method: 'GET'
+	});
+	// Destructure products from response.
+	const { data: products } = await response.json();
 	return {
 		products,
 		superValidatedProduct
@@ -20,11 +15,16 @@ export async function load() {
 }
 
 export const actions = {
-	default: async (event) => {
+	create: async (event) => {
 		const superValidatedProduct = await superValidate(event.request, ProductModelValidation);
 		if (!superValidatedProduct.valid) {
 			// Check out later https://github.com/ciscoheat/sveltekit-flash-message.
 			return message(superValidatedProduct, 'Invalid form data');
 		}
+		// Request to create a new product in database.
+		await event.fetch('/api/v1/product', {
+			method: 'POST',
+			body: JSON.stringify(superValidatedProduct.data)
+		});
 	}
 };
