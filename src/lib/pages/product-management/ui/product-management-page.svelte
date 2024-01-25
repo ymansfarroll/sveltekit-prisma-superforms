@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { SubmitProduct } from '$lib/components';
+	import { ProductList } from '$lib/features/list-product/components';
 </script>
 
-<div class="container pt-8">
-	<div class="w-4/12">
+<div class="container-fluid flex pt-8">
+	<div class="w-3/12">
 		<SubmitProduct />
 	</div>
-	<div class="w-auto"></div>
+	<div class="mx-auto w-auto">
+		<ProductList />
+	</div>
 </div>

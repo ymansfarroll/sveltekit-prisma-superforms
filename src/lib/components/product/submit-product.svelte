@@ -2,19 +2,30 @@
 	import { getContext } from 'svelte';
 	import { InvalidForm, GenericInput } from '.';
 	import { Input, Label, Select, Button, Toggle } from 'flowbite-svelte';
-	import { superForm, formFieldProxy } from 'sveltekit-superforms/client';
+	import { superForm, formFieldProxy, type FormResult } from 'sveltekit-superforms/client';
 
 	import type { Writable } from 'svelte/store';
+	import type { Product } from '@prisma/client';
 	import type { ProductSchema } from '$lib/entities';
 	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { ActionData } from '../../../routes/profile/product/$types';
 
 	// Temporal categories.
 	let categories = [{ value: 1, name: 'Electrical' }];
 
-	// Retrieve data context.
+	// Retrieve product form context.
 	const productFormData: SuperValidated<ProductSchema> = getContext('productFormData');
+	const products: Writable<Product[]> = getContext('ProductList');
 
-	const productSuperForm = superForm(productFormData);
+	const productSuperForm = superForm(productFormData, {
+		onResult(event) {
+			const result = event.result as FormResult<ActionData>;
+			if (result.type === 'success' && result.data?.product) {
+				const createdProduct = result.data?.product;
+				$products = [...$products, createdProduct];
+			}
+		}
+	});
 	// It's quite easy to mix up which form ur using each time, so the pattern super+Model+Form will be used from now on.
 	const { form: superProductStore, errors: productErrors, enhance } = productSuperForm;
 

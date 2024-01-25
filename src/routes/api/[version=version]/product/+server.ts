@@ -5,13 +5,14 @@
 
 import { json } from '@sveltejs/kit';
 import { prisma } from '$lib/shared/prisma/client';
+import { PRODUCT_INCLUDE_PROPERTIES } from '$lib/shared/helpers/constants.js';
 
 // POST: /api/v+number/product
 export async function POST({ request }): Promise<Response> {
-	// FormData to JSON process.
 	const product = await request.json();
 	const newDatabaseProduct = await prisma.product.create({
-		data: product
+		data: product,
+		select: PRODUCT_INCLUDE_PROPERTIES
 	});
 	// Return json response to client.
 	return json({
@@ -31,7 +32,8 @@ export async function GET({ request }): Promise<Response> {
 				gt: 0
 			},
 			status: true
-		}
+		},
+		select: PRODUCT_INCLUDE_PROPERTIES
 	});
 	// Return json response to client.
 	return json({

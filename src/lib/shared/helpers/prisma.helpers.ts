@@ -55,3 +55,14 @@ export const applyCategorySoftDeletion = async (id: number): Promise<void> => {
 		data: productUpdatedData
 	});
 };
+
+// Check out https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields for further details.
+export const excludeFieldsFromPrismaModel = <Model extends object, Key extends keyof Model>(
+	model: Model,
+	keys: Key[]
+	// Valid UntaintedModel type.
+): Omit<Model, Key> => {
+	return Object.fromEntries(
+		Object.entries(model).filter(([key]) => !keys.includes(key as Key))
+	) as Omit<Model, Key>; // Valid UntaintedModel type.
+};

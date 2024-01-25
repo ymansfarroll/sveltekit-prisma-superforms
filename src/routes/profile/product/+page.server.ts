@@ -7,9 +7,9 @@ export async function load(event) {
 		method: 'GET'
 	});
 	// Destructure products from response.
-	const { data: products } = await response.json();
+	const { data: initialProducts } = await response.json();
 	return {
-		products,
+		initialProducts,
 		superValidatedProduct
 	};
 }
@@ -22,9 +22,17 @@ export const actions = {
 			return message(superValidatedProduct, 'Invalid form data');
 		}
 		// Request to create a new product in database.
-		await event.fetch('/api/v1/product', {
+		const response = await event.fetch('/api/v1/product', {
 			method: 'POST',
 			body: JSON.stringify(superValidatedProduct.data)
 		});
+		if (!response.ok) {
+			return message(superValidatedProduct, 'Product register failure');
+		}
+		const { data: product } = await response.json();
+		return {
+			superValidatedProduct,
+			product
+		};
 	}
 };

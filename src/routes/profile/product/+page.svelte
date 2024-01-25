@@ -1,10 +1,12 @@
 <script lang="ts">
 	export let data;
-	import { setContext } from 'svelte';
 	import { ProductManagementPage } from '$lib/pages';
+	import { setProductFormContext, setProductListContext } from '$lib/context/index.js';
 
-	// Spread down the loaded data.
-	setContext('productFormData', data.superValidatedProduct);
+	const { initialProducts, superValidatedProduct } = data;
+	// Set product contexts.
+	setProductListContext(initialProducts);
+	setProductFormContext(superValidatedProduct);
 </script>
 
 <ProductManagementPage />
