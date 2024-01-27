@@ -7,7 +7,7 @@
 	<div class="w-3/12">
 		<SubmitProduct />
 	</div>
-	<div class="mx-auto w-auto">
+	<div class="mx-auto w-8/12">
 		<ProductList />
 	</div>
 </div>

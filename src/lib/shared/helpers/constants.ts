@@ -1,4 +1,4 @@
-import type { Product } from '@prisma/client';
+import type { Product, Prisma } from '@prisma/client';
 
 export const // ZOD constants.
 
@@ -7,11 +7,18 @@ export const // ZOD constants.
 
 export const // Prisma constants.
 
+	TAKE_PAGINATION_PARAMETER = 10,
 	// Just technical test use case.
-	PRODUCT_INCLUDE_PROPERTIES = {
+	PRODUCT_INCLUDE_PROPERTIES: Prisma.ProductSelect = {
 		name: true,
 		amount: true,
 		status: true,
-		provider: true
+		provider: true,
+		// nested field.
+		category: {
+			select: {
+				name: true
+			}
+		}
 	},
 	PRODUCT_EXCLUDED_PROPERTIES: (keyof Product)[] = []; // Ex: ['createdAt', 'updatedAt']

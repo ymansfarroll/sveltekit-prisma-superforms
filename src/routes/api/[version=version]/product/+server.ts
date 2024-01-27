@@ -5,14 +5,20 @@
 
 import { json } from '@sveltejs/kit';
 import { prisma } from '$lib/shared/prisma/client';
-import { PRODUCT_INCLUDE_PROPERTIES } from '$lib/shared/helpers/constants.js';
+import {
+	PRODUCT_INCLUDE_PROPERTIES,
+	TAKE_PAGINATION_PARAMETER
+} from '$lib/shared/helpers/constants.js';
 
 // POST: /api/v+number/product
 export async function POST({ request }): Promise<Response> {
 	const product = await request.json();
 	const newDatabaseProduct = await prisma.product.create({
 		data: product,
-		select: PRODUCT_INCLUDE_PROPERTIES
+		select: {
+			uuid: true,
+			...PRODUCT_INCLUDE_PROPERTIES
+		}
 	});
 	// Return json response to client.
 	return json({
@@ -24,17 +30,27 @@ export async function POST({ request }): Promise<Response> {
 }
 
 // GET: /api/v+number/product
-export async function GET({ request }): Promise<Response> {
-	const products = await prisma.product.findMany({
+export async function GET({ url, request }): Promise<Response> {
+	const skip = url.searchParams.get('skip') || 0;
+
+	const nestedProductObjects = await prisma.product.findMany({
+		skip: +skip, // Same as Number(skip).
+		take: TAKE_PAGINATION_PARAMETER,
 		where: {
-			amount: {
-				//  greater than > 0
-				gt: 0
-			},
-			status: true
+			// Verify absence of previous soft deletions.
+			deletedAt: null
 		},
-		select: PRODUCT_INCLUDE_PROPERTIES
+		select: {
+			uuid: true,
+			...PRODUCT_INCLUDE_PROPERTIES
+		}
 	});
+
+	const products = nestedProductObjects.map((nestedProductObject) => ({
+		...nestedProductObject,
+		category: nestedProductObject.category.name
+	}));
+
 	// Return json response to client.
 	return json({
 		acknowledged: true,

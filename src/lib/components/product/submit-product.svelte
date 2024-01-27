@@ -22,7 +22,9 @@
 			const result = event.result as FormResult<ActionData>;
 			if (result.type === 'success' && result.data?.product) {
 				const createdProduct = result.data?.product;
-				$products = [...$products, createdProduct];
+				if (createdProduct.amount) {
+					$products = [...$products, createdProduct];
+				}
 			}
 		}
 	});
@@ -85,6 +87,6 @@
 		</div>
 		<GenericInput form={productSuperForm} field="date" sort="date" />
 		<Toggle size="small" name={status} bind:checked={$boolValue}>Product status</Toggle>
-		<Button type="submit">Submit</Button>
+		<Button type="submit">Register product</Button>
 	</div>
 </form>
