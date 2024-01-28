@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import { RedStatus, GreenStatus } from '.';
 	import { TableBodyCell, TableBodyRow, Checkbox } from 'flowbite-svelte';
 
+	import type { Writable } from 'svelte/store';
 	import type { Product } from '@prisma/client';
+	import type { CheckStatus } from '$lib/entities/types';
 
 	export let value: Product;
-	export let checked: boolean;
 	export let product: Product;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,11 +17,13 @@
 	const getStatusComponent = (status: boolean) => {
 		return status ? GreenStatus : RedStatus;
 	};
+
+	const checkedProducts: Writable<CheckStatus> = getContext('checkedProducts');
 </script>
 
 <TableBodyRow bind:value>
 	<TableBodyCell class="!p-4">
-		<Checkbox bind:checked />
+		<Checkbox bind:checked={$checkedProducts[product.uuid]} />
 	</TableBodyCell>
 	{#each entries as [key, value]}
 		<TableBodyCell>

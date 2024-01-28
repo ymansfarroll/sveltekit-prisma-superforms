@@ -1,14 +1,12 @@
-import { superValidate, message } from 'sveltekit-superforms/server';
-import { ProductModelValidation } from '$lib/entities';
 import { _request } from '$lib/shared/helpers';
+import { ProductModelValidation } from '$lib/entities';
+import { superValidate, message } from 'sveltekit-superforms/server';
+import { PRODUCT_TAB_CONSTRAINTS } from '$lib/shared/helpers/constants.js';
 
 export async function load(event) {
 	const superValidatedProduct = await superValidate(ProductModelValidation);
 
-	const queryContraints = _request.buildQueryParams({
-		// Add more constraints if required.
-		deletedAt: null
-	});
+	const queryContraints = _request.buildQueryParams(PRODUCT_TAB_CONSTRAINTS.all);
 	const response = await event.fetch(`/api/v1/product${queryContraints}`, {
 		method: 'GET'
 	});

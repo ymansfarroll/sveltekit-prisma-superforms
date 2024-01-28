@@ -1,21 +1,19 @@
 import Prisma, { prisma } from '$lib/shared/prisma/client';
 
-export const applyProductSoftDeletion = async (
-	filter: Prisma.ProductWhereUniqueInput
-): Promise<void> => {
-	const whereUniqueConstraints = Prisma.validator<Prisma.ProductWhereUniqueInput>()(filter);
+export const applyProductSoftDeletion = async (filter: Prisma.ProductWhereInput): Promise<void> => {
+	const constraints = Prisma.validator<Prisma.ProductWhereInput>()(filter);
 
 	const productUpdatedData: Prisma.ProductUpdateInput = {
 		deletedAt: new Date()
 	};
+
 	// Product soft-deletion.
-	await prisma.product.update({
-		where: {
-			...whereUniqueConstraints,
-			deletedAt: null
-		},
+	const updateProducts = prisma.product.updateMany({
+		where: constraints,
 		data: productUpdatedData
 	});
+	// Check out https://www.prisma.io/docs/orm/prisma-client/queries/transactions for further details.
+	await prisma.$transaction([updateProducts]);
 };
 
 export const applyCategorySoftDeletion = async (id: number): Promise<void> => {
@@ -46,7 +44,7 @@ export const applyCategorySoftDeletion = async (id: number): Promise<void> => {
 	const productUpdatedData: Prisma.CategoryUpdateInput = {
 		deletedAt: new Date()
 	};
-	await prisma.product.updateMany({
+	const updateProducts = prisma.product.updateMany({
 		where: {
 			uuid: {
 				in: uuids
@@ -54,6 +52,8 @@ export const applyCategorySoftDeletion = async (id: number): Promise<void> => {
 		},
 		data: productUpdatedData
 	});
+	// Check out https://www.prisma.io/docs/orm/prisma-client/queries/transactions for further details.
+	await prisma.$transaction([updateProducts]);
 };
 
 // Check out https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields for further details.

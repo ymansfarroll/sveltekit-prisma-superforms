@@ -6,10 +6,13 @@
 import { json } from '@sveltejs/kit';
 import { prisma } from '$lib/shared/prisma/client';
 import {
+	SUCCESSFUL_REQUEST_STATUS,
+	TAKE_PAGINATION_PARAMETER,
 	PRODUCT_INCLUDE_PROPERTIES,
-	TAKE_PAGINATION_PARAMETER
+	SUCCESSFUL_REQUEST_RESPONSE
 } from '$lib/shared/helpers/constants.js';
 import type { QueryContraint } from '$lib/entities/types.js';
+import { applyProductSoftDeletion } from '$lib/shared/helpers/prisma.helpers';
 
 // POST: /api/v+number/product
 export async function POST({ request }): Promise<Response> {
@@ -31,7 +34,7 @@ export async function POST({ request }): Promise<Response> {
 	// Return json response to client.
 	return json({
 		acknowledged: true,
-		status: 200,
+		status: SUCCESSFUL_REQUEST_STATUS,
 		data: newClientSideProduct,
 		method: request.method
 	});
@@ -69,8 +72,27 @@ export async function GET({ url, request }): Promise<Response> {
 	// Return json response to client.
 	return json({
 		acknowledged: true,
-		status: 200,
+		status: SUCCESSFUL_REQUEST_STATUS,
 		data: products,
+		method: request.method
+	});
+}
+
+// DELETE: /api/v+number/product
+export async function DELETE({ url, request }): Promise<Response> {
+	// Parameters management.
+	const uuids = url.searchParams.get('uuids')?.split(',') || [];
+
+	await applyProductSoftDeletion({
+		uuid: {
+			in: uuids
+		}
+	});
+	// Return json response to client.
+	return json({
+		acknowledged: true,
+		status: SUCCESSFUL_REQUEST_STATUS,
+		response: SUCCESSFUL_REQUEST_RESPONSE.DELETE,
 		method: request.method
 	});
 }

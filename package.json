@@ -47,6 +47,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "^5.8.1"
+		"@prisma/client": "^5.8.1",
+		"svelte-routing": "^2.11.0"
 	}
 }

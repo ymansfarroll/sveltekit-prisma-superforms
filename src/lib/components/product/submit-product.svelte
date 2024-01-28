@@ -18,16 +18,15 @@
 
 	// Retrieve product form context.
 	const productFormData: SuperValidated<ProductSchema> = getContext('productFormData');
-	const products: Writable<Product[]> = getContext('ProductList');
+	const productStore: Writable<Product[]> = getContext('ProductList');
 
 	const productSuperForm = superForm(productFormData, {
 		onResult(event) {
 			const result = event.result as FormResult<ActionData>;
 			if (result.type === 'success' && result.data?.product) {
 				const createdProduct = result.data?.product;
-				if (createdProduct.amount) {
-					$products = [...$products, createdProduct];
-				}
+				$productStore = [...$productStore, createdProduct];
+				event.formEl.reset();
 			}
 		}
 	});

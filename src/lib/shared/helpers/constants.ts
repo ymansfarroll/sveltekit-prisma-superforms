@@ -1,4 +1,5 @@
 import type { Product, Prisma } from '@prisma/client';
+import type { ProductTabQueryConstraint } from '$lib/entities/types';
 
 export const // ZOD constants.
 
@@ -22,3 +23,31 @@ export const // Prisma constants.
 		}
 	},
 	PRODUCT_EXCLUDED_PROPERTIES: (keyof Product)[] = []; // Ex: ['createdAt', 'updatedAt']
+
+export const PRODUCT_TAB_CONSTRAINTS: ProductTabQueryConstraint = {
+	all: {
+		deletedAt: null
+	},
+	available: {
+		deletedAt: null,
+		status: true
+	},
+	'no-available': {
+		deletedAt: null,
+		status: false
+	},
+	deleted: {
+		// Workaround to parse at the time to shape the query parameters.
+		deletedAt: JSON.stringify({
+			not: null
+		})
+	}
+};
+
+export const SUCCESSFUL_REQUEST_RESPONSE = {
+	POST: 'RECORD_CREATION_SUCCEEDED',
+	PUT: 'RECORD_UPDATE_SUCCEEDED',
+	DELETE: 'RECORD_DELETION_SUCCEEDED'
+};
+
+export const SUCCESSFUL_REQUEST_STATUS = 200;
