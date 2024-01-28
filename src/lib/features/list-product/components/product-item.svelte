@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { TableBodyCell, TableBodyRow, Checkbox } from 'flowbite-svelte';
 	import { RedStatus, GreenStatus } from '.';
+	import { TableBodyCell, TableBodyRow, Checkbox } from 'flowbite-svelte';
 
 	import type { Product } from '@prisma/client';
 
-	// Binding.
 	export let value: Product;
 	export let checked: boolean;
-	// Others props.
 	export let product: Product;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

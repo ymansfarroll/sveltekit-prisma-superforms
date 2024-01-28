@@ -9,6 +9,7 @@ import {
 	PRODUCT_INCLUDE_PROPERTIES,
 	TAKE_PAGINATION_PARAMETER
 } from '$lib/shared/helpers/constants.js';
+import type { QueryContraint } from '$lib/entities/types.js';
 
 // POST: /api/v+number/product
 export async function POST({ request }): Promise<Response> {
@@ -20,32 +21,46 @@ export async function POST({ request }): Promise<Response> {
 			...PRODUCT_INCLUDE_PROPERTIES
 		}
 	});
+
+	// Workaround to level up the category name field.
+	const newClientSideProduct = {
+		...newDatabaseProduct,
+		category: newDatabaseProduct.category.name
+	};
+
 	// Return json response to client.
 	return json({
 		acknowledged: true,
 		status: 200,
-		data: newDatabaseProduct,
+		data: newClientSideProduct,
 		method: request.method
 	});
 }
 
 // GET: /api/v+number/product
 export async function GET({ url, request }): Promise<Response> {
-	const skip = url.searchParams.get('skip') || 0;
+	// Parameters management.
+	const constraints: QueryContraint = {};
+	for (const [key, value] of url.searchParams.entries()) {
+		constraints[key] = JSON.parse(value);
+	}
+
+	// Verify if skip exists, if so, get its value and delete it right after.
+	const skip = constraints.skip || 0;
+	delete constraints.skip;
 
 	const nestedProductObjects = await prisma.product.findMany({
 		skip: +skip, // Same as Number(skip).
 		take: TAKE_PAGINATION_PARAMETER,
-		where: {
-			// Verify absence of previous soft deletions.
-			deletedAt: null
-		},
+		// Spread the contraints over.
+		where: constraints,
 		select: {
 			uuid: true,
 			...PRODUCT_INCLUDE_PROPERTIES
 		}
 	});
 
+	// Workaround to level up the category name field.
 	const products = nestedProductObjects.map((nestedProductObject) => ({
 		...nestedProductObject,
 		category: nestedProductObject.category.name

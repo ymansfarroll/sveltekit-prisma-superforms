@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { SubmitProduct } from '$lib/components';
-	import { ProductList } from '$lib/features/list-product/components';
+	import { ContraintTab } from '$lib/features/list-product/components';
 </script>
 
 <div class="container-fluid flex pt-8">
@@ -8,6 +8,6 @@
 		<SubmitProduct />
 	</div>
 	<div class="mx-auto w-8/12">
-		<ProductList />
+		<ContraintTab />
 	</div>
 </div>

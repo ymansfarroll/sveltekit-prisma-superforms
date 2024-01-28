@@ -11,7 +11,10 @@
 	import type { ActionData } from '../../../routes/profile/product/$types';
 
 	// Temporal categories.
-	let categories = [{ value: 1, name: 'Electrical' }];
+	let categories = [
+		{ value: 1, name: 'Electrical' },
+		{ value: 2, name: 'Home-made' }
+	];
 
 	// Retrieve product form context.
 	const productFormData: SuperValidated<ProductSchema> = getContext('productFormData');

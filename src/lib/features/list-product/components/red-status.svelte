@@ -1,7 +1,7 @@
 <script></script>
 
 <svg
-	class="h-3 w-3 text-red-500"
+	class="ms-4 h-3 w-3 text-red-500"
 	aria-hidden="true"
 	xmlns="http://www.w3.org/2000/svg"
 	fill="none"
