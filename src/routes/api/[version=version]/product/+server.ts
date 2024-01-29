@@ -11,9 +11,9 @@ import {
 	PRODUCT_INCLUDE_PROPERTIES,
 	SUCCESSFUL_REQUEST_RESPONSE
 } from '$lib/shared/helpers/constants.js';
-import type { QueryContraint } from '$lib/entities/types.js';
 import { applyProductSoftDeletion } from '$lib/shared/helpers/prisma.helpers';
 
+import type { QueryContraint } from '$lib/entities/types';
 // POST: /api/v+number/product
 export async function POST({ request }): Promise<Response> {
 	const product = await request.json();

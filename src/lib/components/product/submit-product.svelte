@@ -4,23 +4,23 @@
 	import { Input, Label, Select, Button, Toggle } from 'flowbite-svelte';
 	import { superForm, formFieldProxy, type FormResult } from 'sveltekit-superforms/client';
 
-	import type { Writable } from 'svelte/store';
+	import type { Readable, Writable } from 'svelte/store';
 	import type { Product } from '@prisma/client';
 	import type { ProductSchema } from '$lib/entities';
 	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { CategorySelectOption } from '$lib/entities/types';
 	import type { ActionData } from '../../../routes/profile/product/$types';
 
-	// Temporal categories.
-	let categories = [
-		{ value: 1, name: 'Electrical' },
-		{ value: 2, name: 'Home-made' }
-	];
+	let categorySelectOptions: Readable<CategorySelectOption[]> = getContext('CategorySelectList');
 
 	// Retrieve product form context.
 	const productFormData: SuperValidated<ProductSchema> = getContext('productFormData');
 	const productStore: Writable<Product[]> = getContext('ProductList');
 
 	const productSuperForm = superForm(productFormData, {
+		resetForm: true,
+
+		// Events management.
 		onResult(event) {
 			const result = event.result as FormResult<ActionData>;
 			if (result.type === 'success' && result.data?.product) {
@@ -81,14 +81,14 @@
 			<Label for="product-category" class="mb-2">Product category:</Label>
 			<Select
 				id="product-category"
-				items={categories}
+				items={$categorySelectOptions}
 				placeholder="Choose an option ..."
 				name="categoryId"
 				bind:value={$superProductStore.categoryId}
 			/>
 		</div>
 		<GenericInput form={productSuperForm} field="date" sort="date" />
-		<Toggle size="small" name={status} bind:checked={$boolValue}>Product status</Toggle>
+		<Toggle size="small" name="status" bind:checked={$boolValue}>Product status</Toggle>
 		<Button type="submit">Register product</Button>
 	</div>
 </form>
